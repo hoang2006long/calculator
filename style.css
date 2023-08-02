@@ -12,7 +12,7 @@ html {
 .main {
     display: flex;
     margin: auto;
-    margin-top: 5rem;
+    margin-top: 4rem;
     width: 32rem;
     flex-direction: column;
     background-color: #231e35;
