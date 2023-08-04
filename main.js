@@ -5,6 +5,7 @@ const btns = $$('.btn')
 const input = $('.screen')
 
 const calculator = {
+    isError: false,
     squareRootOfTwo(newArrayValue) {  // hàm xử lý căn bậc 2
         let squareRootOfTwoIndexArray = []
         // lấy ra index của dấu căn và cho vào mảng
@@ -43,25 +44,28 @@ const calculator = {
         // nếu là số thập phân thì làm tròn tới chữ số thứ 5
         let closingParenthesis = 0
         let openingParenthesis = 0
-        let a ='';
+
         for (let i of allValueOfBtn) {
             if (i == '(') openingParenthesis++
             if (i == ')') closingParenthesis++
         }
 
-        if (closingParenthesis !== openingParenthesis) {
-            allValueOfBtn+=')'
+        if (closingParenthesis < openingParenthesis) {
+            for (let i = 0; i < (openingParenthesis-closingParenthesis); i++) {
+                allValueOfBtn+=(')')
+            }
         } 
+        if (closingParenthesis > openingParenthesis) {
+            for (let i = 0; i < (closingParenthesis - openingParenthesis); i++) {
+                allValueOfBtn ='(' + allValueOfBtn
+            }
+        }
         
-        if (allValueOfBtn.charAt(allValueOfBtn.length-1) === '+') {
-            allValueOfBtn.padEnd('0')
+        if (Number.isInteger(eval(allValueOfBtn))) {
+            input.value = eval(allValueOfBtn)
         } else {
-            if (Number.isInteger(eval(allValueOfBtn))) {
-                input.value = eval(allValueOfBtn)
-            } else {
-                if (eval(allValueOfBtn)) {
-                    input.value = eval(allValueOfBtn).toFixed(num)
-                }
+            if (eval(allValueOfBtn)) {
+                input.value = eval(allValueOfBtn).toFixed(num)
             }
         }
     },
@@ -96,10 +100,30 @@ const calculator = {
                     _this.characterConversion(arrayValue,newArrayValue)
                     _this.squareRootOfTwo(newArrayValue)
                     allValueOfBtn = newArrayValue.join('')
+                    
+                    if (
+                        allValueOfBtn.charAt(allValueOfBtn.length-1) === '+' |
+                        allValueOfBtn.charAt(allValueOfBtn.length-1) === '-' |
+                        allValueOfBtn.charAt(allValueOfBtn.length-1) === '*' |
+                        allValueOfBtn.charAt(allValueOfBtn.length-1) === '/' |
+                        allValueOfBtn.charAt(allValueOfBtn.length-11) === 'M' 
+                        
+                        ) {
+                        _this.isError = true
+                        arrayValue,newArrayValue = []
+                    } else if (isNaN(Number.parseFloat(allValueOfBtn)) === 'false') {
+                        _this.isError = true
+                        arrayValue = []
+                        newArrayValue = []
+                    } else {
+                        _this.isError = false
+                    }
+                    
                     _this.handleNumber(allValueOfBtn,5)
                     
                     // mỗi khi ấn dấu '=' thì thay thế kết quả cho tất cả các phần tử của mảng
-                    // console.log(newArrayValue)
+                    console.log(allValueOfBtn)
+                    console.log(!isNaN(Number.parseFloat(allValueOfBtn)))
                     resetArray()
                     arrayValue.push(input.value)
                     newArrayValue.push(input.value)
