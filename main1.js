@@ -63,6 +63,7 @@ const calculator = {
             btn.value === '*'|
             btn.value === '/'|
             btn.value === '/100'|
+            btn.value === ')'|
             btn.value === '**') 
         ) { 
             if (!arrayHandle[1]) {
