@@ -24,14 +24,54 @@ const calculator = {
         }
         return stringHandle
     },
-    autoAddMultiplicationSignToSquareRoot(element,btn) {
+    autoAddMultiplicationSignToSquareRoot(arrayHandle,element,btn) {
+        if (btn.name === "Ans" && btn.value != '') {
+            element.value = 'addMultiplication'
+        } else {
+            if (
+                (!isNaN(arrayHandle[arrayHandle.length-1]) |
+                btn.value === 'addMultiplication') 
+                ) {
+                    element.value = '*Math.sqrt('
+                }
+            else element.value = 'Math.sqrt('
+        }
+    },
+    handleNotToSpamSign(btn, arrayHandle, arrayUser) {
         if (
-            (!isNaN(btn.value) || 
-            btn.value[btn.value.length - 1] === ')') 
+            btn.value === '+' |
+            btn.value === '-' |
+            btn.value === '*' |
+            btn.value === '/' |
+            btn.value === '**' 
             ) {
-                element.value = '*Math.sqrt('
+                if (
+                arrayHandle[arrayHandle.length-2] === '+'| 
+                arrayHandle[arrayHandle.length-2] === '-'|
+                arrayHandle[arrayHandle.length-2] === '*'|
+                arrayHandle[arrayHandle.length-2] === '/'|
+                arrayHandle[arrayHandle.length-2] === '**'
+            ) {
+             arrayUser.pop()
+             arrayHandle.pop()
             }
-        else {element.value = 'Math.sqrt('}
+        }
+    },
+    blockTypingSignWhenStart(btn, arrayHandle, arrayUser) {
+        if ( (btn.value === '+'|
+            btn.value === '-'|
+            btn.value === '*'|
+            btn.value === '/'|
+            btn.value === '/100'|
+            btn.value === '**') 
+        ) { 
+            if (!arrayHandle[1]) {
+                arrayHandle.pop()
+                arrayUser.pop()
+              
+            }
+        }
+        
     },
     handleEvent() {
         const _this = this
@@ -40,11 +80,14 @@ const calculator = {
 
         btns.forEach(btn => {
             btn.onclick = function() {
-                _this.autoAddMultiplicationSignToSquareRoot($('.squareRoot'),btn)
+                _this.autoAddMultiplicationSignToSquareRoot(arrayHandle,$('.squareRoot'),btn)
+
                 if (btn.value !== '') {
                     arrayHandle.push(btn.value)
                     arrayUser.push(btn.name)
                 }
+
+                
 
                 if (btn.name === 'Del') {
                     arrayHandle = []
@@ -56,16 +99,12 @@ const calculator = {
                     arrayHandle.pop()
                 } else if (btn.name === '=') {
                     if ( 
-                        arrayHandle[arrayHandle.length-1] === '+'| 
-                        arrayHandle[arrayHandle.length-1] === '-'|
-                        arrayHandle[arrayHandle.length-1] === '*'|
-                        arrayHandle[arrayHandle.length-1] === '/'|
-                        arrayHandle[arrayHandle.length-1] === '**'|
                         arrayHandle[arrayHandle.length-1] === 'Math.sqrt(' | 
                         !arrayHandle[0]
-                        ) {
-                        // không làm gì cả
-                    } else {
+                    ) {
+                        
+                    } 
+                    else {
                         total = eval(_this.autoAddParenthesis(arrayHandle.join(''))) 
                         arrayUser = [total.toString()]
                         arrayHandle = [total.toString()]
@@ -73,6 +112,9 @@ const calculator = {
                         $('.Ans').value = `(${total})`
                     }
                 } 
+
+                _this.handleNotToSpamSign(btn, arrayHandle, arrayUser)
+                _this.blockTypingSignWhenStart(btn, arrayHandle, arrayUser)
                 
                 inputScreen.value = arrayUser.join('')
             }
@@ -80,6 +122,3 @@ const calculator = {
     }
 }
 calculator.handleEvent()
-
-
-   

@@ -22,7 +22,7 @@ html {
 
 .screen {
     overflow: hidden;
-    height: 100px;
+    height: 10rem;
     background-color: #a5a4a4;
     border-radius: 1.5rem;
     padding: 1rem;
@@ -70,5 +70,14 @@ html {
 
 .btn--greenColor {
     color: green
+}
+
+@media (max-width: 739px) {
+    html {
+        font-size: 40%;
+    }
+    .btn:hover {
+        opacity: 1;
+    }
 }
 
