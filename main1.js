@@ -43,6 +43,8 @@ const calculator = {
             btn.value === '-' |
             btn.value === '*' |
             btn.value === '/' |
+            btn.value === '/100' |
+            btn.value === '.' |
             btn.value === '**' 
             ) {
                 if (
@@ -50,6 +52,7 @@ const calculator = {
                 arrayHandle[arrayHandle.length-2] === '-'|
                 arrayHandle[arrayHandle.length-2] === '*'|
                 arrayHandle[arrayHandle.length-2] === '/'|
+                arrayHandle[arrayHandle.length-2] === '.'|
                 arrayHandle[arrayHandle.length-2] === '**'
             ) {
              arrayUser.pop()
@@ -62,6 +65,7 @@ const calculator = {
             btn.value === '-'|
             btn.value === '*'|
             btn.value === '/'|
+            btn.value === '.'|
             btn.value === '/100'|
             btn.value === ')'|
             btn.value === '**') 
