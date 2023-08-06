@@ -5,6 +5,7 @@ const btns = $$('.btn')
 const inputScreen = $('.screen')
 
 const calculator = {
+    isEqual: false,
     autoAddParenthesis(stringHandle) {
         let closingParenthesis = 0
         let openingParenthesis = 0
@@ -41,24 +42,37 @@ const calculator = {
         if (
             btn.value === '+' |
             btn.value === '-' |
+            btn.value === '(0-' |
             btn.value === '*' |
             btn.value === '/' |
             btn.value === '/100' |
             btn.value === '.' |
-            btn.value === '**' 
+            btn.value === '**(' 
             ) {
                 if (
                 arrayHandle[arrayHandle.length-2] === '+'| 
                 arrayHandle[arrayHandle.length-2] === '-'|
+                arrayHandle[arrayHandle.length-2] === '(0-'|
                 arrayHandle[arrayHandle.length-2] === '*'|
                 arrayHandle[arrayHandle.length-2] === '/'|
                 arrayHandle[arrayHandle.length-2] === '.'|
-                arrayHandle[arrayHandle.length-2] === '**'
+                arrayHandle[arrayHandle.length-2] === '**('
             ) {
              arrayUser.pop()
              arrayHandle.pop()
             }
         }
+
+        if (
+            (btn.value === '*' |
+            btn.value === '/100' |
+            btn.value === '/' ) &&
+            arrayHandle[arrayHandle.length-2] === 'Math.sqrt(' 
+        ) {
+            arrayUser.pop()
+            arrayHandle.pop()
+        }
+        
     },
     blockTypingSignWhenStart(btn, arrayHandle, arrayUser) {
         if ( (btn.value === '+'|
@@ -68,15 +82,13 @@ const calculator = {
             btn.value === '.'|
             btn.value === '/100'|
             btn.value === ')'|
-            btn.value === '**') 
+            btn.value === '**(') 
         ) { 
             if (!arrayHandle[1]) {
                 arrayHandle.pop()
                 arrayUser.pop()
-              
             }
         }
-        
     },
     handleEvent() {
         const _this = this
@@ -86,34 +98,33 @@ const calculator = {
         btns.forEach(btn => {
             btn.onclick = function() {
                 _this.autoAddMultiplicationSignToSquareRoot(arrayHandle,$('.squareRoot'),btn)
-
+                
                 if (btn.value !== '') {
                     arrayHandle.push(btn.value)
                     arrayUser.push(btn.name)
                 }
 
-                
-
                 if (btn.name === 'Del') {
                     arrayHandle = []
                     arrayUser = []
                     inputScreen.value = ''
-                }
+                } 
                 else if (btn.name === 'C') {
                     arrayUser.pop()
                     arrayHandle.pop()
-                } else if (btn.name === '=') {
+                } 
+                else if (btn.name === '=') {
+                    _this.isEqual = true
                     if ( 
                         arrayHandle[arrayHandle.length-1] === 'Math.sqrt(' | 
                         !arrayHandle[0]
-                    ) {
-                        
+                        ) {
+                            // không làm gì
                     } 
                     else {
                         total = eval(_this.autoAddParenthesis(arrayHandle.join(''))) 
                         arrayUser = [total.toString()]
                         arrayHandle = [total.toString()]
-                        inputScreen.value = total
                         $('.Ans').value = `(${total})`
                     }
                 } 
